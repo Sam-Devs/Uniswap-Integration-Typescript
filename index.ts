@@ -29,12 +29,12 @@ const poolContract = new ethers.Contract(
 
 // Interface
 interface Immutables {
-    factory: Address,
-    token0: Address,
-    token1: Address,
-    fee: number,
-    tickSpacing: number,
-    maxLiquidityPerTick: number
+    factory: Address;
+    token0: Address;
+    token1: Address;
+    fee: number;
+    tickSpacing: number;
+    maxLiquidityPerTick: number;
 }
 
 // Get Pool Immutables
