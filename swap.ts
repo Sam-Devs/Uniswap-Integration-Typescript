@@ -3,6 +3,8 @@ import { ethers } from "ethers";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
 import { abi as ISwapRouter } from "@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json";
 import { Route } from "@uniswap/v3-sdk";
+import { createPool } from "./create-pool";
+
 
 // Provider
 const mainnet = process.env.MAINNET;
@@ -24,14 +26,15 @@ const tokenAddresses = {
 
 async function swap() {
 
-    
+    const TokenA = new Token(1, tokenAddresses.token0, 6, "USDC", "USD Coin");
+    const TokenB = new Token(1, tokenAddresses.token1, 18, "WETH", "Wrapped Ether");
     // Deadline
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 
     // Amount In
-    const amountIn = CurrencyAmount.fromRawAmount(tokenAddresses.token0, "5000000000");
+    const amountIn = CurrencyAmount.fromRawAmount(TokenA, "5000000000");
 
-    const route = new Route([pool], tokenAddresses.token0, tokenAddresses.token1);
+    const route = new Route([pool], TokenA, TokenB);
 
     const swapParams = {
         path: [tokenAddresses.token0, tokenAddresses.token1],

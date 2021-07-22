@@ -12,7 +12,7 @@ const poolAddress = "0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8"
 const poolContract = new ethers.Contract(poolAddress, IUniswapV3Pool, provider);
 
 // Interfaces
-interface Immutables {
+export interface Immutables {
     factory: string;
     token0: string;
     token1: string;
@@ -22,7 +22,7 @@ interface Immutables {
 }
 
 // State
-interface State {
+export interface State {
     liquidity: ethers.BigNumber;
     sqrtPriceX96: ethers.BigNumber;
     tick: number;
@@ -34,7 +34,7 @@ interface State {
 }
 
 // Fetch Immutable Data
-async function getPoolImmutables() {
+export async function getPoolImmutables() {
     const PoolImmutables: Immutables = {
         factory: await poolContract.factory(),
         token0: await poolContract.token0(),
@@ -47,7 +47,7 @@ async function getPoolImmutables() {
 }
 
 // Fetch State Data
-async function getPoolState() {
+export async function getPoolState() {
     const slot = await poolContract.slot0();
     const PoolState: State = {
         liquidity: await poolContract.liquidity(),
@@ -88,3 +88,4 @@ async function createPool() {
 
 }
 createPool();
+
