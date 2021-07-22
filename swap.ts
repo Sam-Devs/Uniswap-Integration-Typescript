@@ -1,8 +1,8 @@
 require("dotenv").config();
 import { ethers } from "ethers";
-import { CurrencyAmount, Token } from "@uniswap/sdk-core";
+import { CurrencyAmount, Percent, Token } from "@uniswap/sdk-core";
 import { abi as ISwapRouter } from "@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json";
-import { Pool, Route } from "@uniswap/v3-sdk";
+import { Pool, Route, Trade } from "@uniswap/v3-sdk";
 import { getPoolImmutables, getPoolState } from "./create-pool";
 
 // Provider
@@ -25,44 +25,51 @@ const tokenAddresses = {
 
 async function swap() {
 
-    const TokenA = new Token(1, tokenAddresses.token0, 6, "USDC", "USD Coin");
-    const TokenB = new Token(1, tokenAddresses.token1, 18, "WETH", "Wrapped Ether");
-    // Deadline
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
-
-    // Amount In
-    const amountIn = CurrencyAmount.fromRawAmount(TokenA, "5000000000");
-
-    // Pool
-    const immutables = await getPoolImmutables();
-    const state = await getPoolState();
-
-    const pool = new Pool(
-        TokenA,
-        TokenB,
-        immutables.fee,
-        state.sqrtPriceX96.toString(),
-        state.liquidity.toString(),
-        state.tick,
-    )
-
-    const route = new Route([pool], TokenA, TokenB);
-    console.log(`1 USDC can be swapped for ${route.midPrice.toSignificant(6)} WETH`);
-    console.log(`1 WETH can be swapped for ${route.midPrice.invert().toSignificant(6)} USDC`);
-    
-
-    // const swapParams = {
-    //     path: [tokenAddresses.token0, tokenAddresses.token1],
-    //     recipient: signer.address,
-    //     deadline: deadline,
-    //     amountIn: ethers.utils.parseUnits(amountIn.toExact(), 6),
-    //     amountOutMinimum:
-    // }
     try {
-        // const swapTransaction = await swapRouter.exactInput(
-        //     swapParams,
-        //     {value: value, gasPrice: 20e9}
-        // )
+        const TokenA = new Token(1, tokenAddresses.token0, 6, "USDC", "USD Coin");
+        const TokenB = new Token(1, tokenAddresses.token1, 18, "WETH", "Wrapped Ether");
+        // Deadline
+        const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
+    
+        // Amount In
+        const amountIn = CurrencyAmount.fromRawAmount(TokenA, "5000000000");
+    
+        // Pool
+        const immutables = await getPoolImmutables();
+        const state = await getPoolState();
+    
+        const pool = new Pool(
+            TokenA,
+            TokenB,
+            immutables.fee,
+            state.sqrtPriceX96.toString(),
+            state.liquidity.toString(),
+            state.tick,
+        )
+    
+        const route = new Route([pool], TokenA, TokenB);
+        console.log(`1 USDC can be swapped for ${route.midPrice.toSignificant(6)} WETH`);
+        console.log(`1 WETH can be swapped for ${route.midPrice.invert().toSignificant(6)} USDC`);
+        
+        const trade = await Trade.exactIn(route, amountIn);
+        console.log(`The execution price of this trade is ${trade.executionPrice.toSignificant(6)} WETH to 1 USDC`);
+        
+        const slippageTolerance = new Percent("50", "10000");
+        const amountOutMinimum = trade.minimumAmountOut(slippageTolerance);
+        console.log(`For 5000 USDC you can get a minimum of ${amountOutMinimum.toSignificant(6)} WETH`);
+        
+    
+        const swapParams = {
+            path: [tokenAddresses.token0, tokenAddresses.token1],
+            recipient: signer.address,
+            deadline: deadline,
+            amountIn: ethers.utils.parseUnits(amountIn.toExact(), 6),
+            amountOutMinimum: ethers.utils.parseUnits(amountOutMinimum.toExact(), 18)
+        }
+        const swapTransaction = await swapRouter.exactInput(
+            swapParams,
+            {value: value, gasPrice: 20e9}
+        )
     } catch (error) {
         const result = (error as Error).message;
         console.log(result);
