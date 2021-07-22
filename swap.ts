@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
 import { abi as ISwapRouter } from "@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json";
 import { Pool, Route } from "@uniswap/v3-sdk";
-import { createPool, getPoolImmutables, getPoolState } from "./create-pool";
+import { getPoolImmutables, getPoolState } from "./create-pool";
 import { stat } from "fs";
 
 
@@ -49,19 +49,22 @@ async function swap() {
     )
 
     const route = new Route([pool], TokenA, TokenB);
+    console.log(`1 USDC can be swapped for ${route.midPrice.toSignificant(6)} WETH`);
+    console.log(`1 WETH can be swapped for ${route.midPrice.invert().toSignificant(6)} USDC`);
+    
 
-    const swapParams = {
-        path: [tokenAddresses.token0, tokenAddresses.token1],
-        recipient: signer.address,
-        deadline: deadline,
-        amountIn: ethers.utils.parseUnits(amountIn.toExact(), 6),
-        amountOutMinimum:
-    }
+    // const swapParams = {
+    //     path: [tokenAddresses.token0, tokenAddresses.token1],
+    //     recipient: signer.address,
+    //     deadline: deadline,
+    //     amountIn: ethers.utils.parseUnits(amountIn.toExact(), 6),
+    //     amountOutMinimum:
+    // }
     try {
-        const swapTransaction = await swapRouter.exactInput(
-            swapParams,
-            {value: value, gasPrice: 20e9}
-        )
+        // const swapTransaction = await swapRouter.exactInput(
+        //     swapParams,
+        //     {value: value, gasPrice: 20e9}
+        // )
     } catch (error) {
         const result = (error as Error).message;
         console.log(result);
