@@ -2,8 +2,9 @@ require("dotenv").config();
 import { ethers } from "ethers";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
 import { abi as ISwapRouter } from "@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json";
-import { Route } from "@uniswap/v3-sdk";
-import { createPool } from "./create-pool";
+import { Pool, Route } from "@uniswap/v3-sdk";
+import { createPool, getPoolImmutables, getPoolState } from "./create-pool";
+import { stat } from "fs";
 
 
 // Provider
@@ -33,6 +34,19 @@ async function swap() {
 
     // Amount In
     const amountIn = CurrencyAmount.fromRawAmount(TokenA, "5000000000");
+
+    // Pool
+    const immutables = await getPoolImmutables();
+    const state = await getPoolState();
+
+    const pool = new Pool(
+        TokenA,
+        TokenB,
+        immutables.fee,
+        state.sqrtPriceX96.toString(),
+        state.liquidity.toString(),
+        state.tick,
+    )
 
     const route = new Route([pool], TokenA, TokenB);
 
