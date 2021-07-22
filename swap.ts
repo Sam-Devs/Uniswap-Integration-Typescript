@@ -67,8 +67,7 @@ async function swap() {
             amountOutMinimum: ethers.utils.parseUnits(amountOutMinimum.toExact(), 18)
         }
         const swapTransaction = await swapRouter.exactInput(
-            swapParams,
-            {value: value, gasPrice: 20e9}
+            swapParams
         )
         console.log(`Swap Transaction Hash: ${swapTransaction.hash}`);
         const swapReceipt = swapTransaction.wait();
