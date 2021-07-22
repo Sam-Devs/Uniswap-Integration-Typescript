@@ -2,8 +2,7 @@ require("dotenv").config();
 import { ethers } from "ethers";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
 import { abi as ISwapRouter } from "@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json";
-import { } from "@uniswap/v3-sdk";
-import { hexValue } from "ethers/lib/utils";
+import { Route } from "@uniswap/v3-sdk";
 
 // Provider
 const mainnet = process.env.MAINNET;
@@ -30,13 +29,15 @@ async function swap() {
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 
     // Amount In
-    const amountIn = CurrencyAmount.fromRawAmount(USDC, "5000000000");
+    const amountIn = CurrencyAmount.fromRawAmount(tokenAddresses.token0, "5000000000");
+
+    const route = new Route([pool], tokenAddresses.token0, tokenAddresses.token1);
 
     const swapParams = {
         path: [tokenAddresses.token0, tokenAddresses.token1],
         recipient: signer.address,
         deadline: deadline,
-        amountIn: 
+        amountIn: ethers.utils.parseUnits(amountIn.toExact(), 6),
         amountOutMinimum:
     }
     try {

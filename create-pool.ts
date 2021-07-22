@@ -66,25 +66,25 @@ async function getPoolState() {
 async function createPool() {
     try {
         const immutables = await getPoolImmutables();
-    const state = await getPoolState();
+        const state = await getPoolState();
 
-    const TokenA = new Token(1, immutables.token0, 6, "USDC", "USD Coin");
-    const TokenB = new Token(1, immutables.token1, 18, "WETH", "Wrapped Ether");
+        const TokenA = new Token(1, immutables.token0, 6, "USDC", "USD Coin");
+        const TokenB = new Token(1, immutables.token1, 18, "WETH", "Wrapped Ether");
 
-    const pool = new Pool(
-        TokenA,
-        TokenB,
-        immutables.fee,
-        state.sqrtPriceX96.toString(),
-        state.liquidity.toString(),
-        state.tick
-    )
-    console.log(pool);
+        const pool = new Pool(
+            TokenA,
+            TokenB,
+            immutables.fee,
+            state.sqrtPriceX96.toString(),
+            state.liquidity.toString(),
+            state.tick
+        )
+        console.log(pool);
     } catch (e) {
         const result = (e as Error).message;
         console.log(result);
-        
+
     }
-    
+
 }
 createPool();
