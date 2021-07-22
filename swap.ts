@@ -70,6 +70,11 @@ async function swap() {
             swapParams,
             {value: value, gasPrice: 20e9}
         )
+        console.log(`Swap Transaction Hash: ${swapTransaction.hash}`);
+        const swapReceipt = swapTransaction.wait();
+        console.log(`Swap Transaction Receipt: ${swapReceipt}`);
+        
+        
     } catch (error) {
         const result = (error as Error).message;
         console.log(result);
