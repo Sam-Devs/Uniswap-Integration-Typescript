@@ -1,8 +1,9 @@
 require("dotenv").config();
 import { ethers } from "ethers";
-import { Token } from "@uniswap/sdk-core";
+import { CurrencyAmount, Token } from "@uniswap/sdk-core";
 import { abi as ISwapRouter } from "@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json";
 import { } from "@uniswap/v3-sdk";
+import { hexValue } from "ethers/lib/utils";
 
 // Provider
 const mainnet = process.env.MAINNET;
@@ -23,5 +24,29 @@ const tokenAddresses = {
 };
 
 async function swap() {
+
     
+    // Deadline
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
+
+    // Amount In
+    const amountIn = CurrencyAmount.fromRawAmount(USDC, "5000000000");
+
+    const swapParams = {
+        path: [tokenAddresses.token0, tokenAddresses.token1],
+        recipient: signer.address,
+        deadline: deadline,
+        amountIn: 
+        amountOutMinimum:
+    }
+    try {
+        const swapTransaction = await swapRouter.exactInput(
+            swapParams,
+            {value: value, gasPrice: 20e9}
+        )
+    } catch (error) {
+        const result = (error as Error).message;
+        console.log(result);
+        
+    }
 }

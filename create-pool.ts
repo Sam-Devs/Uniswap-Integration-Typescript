@@ -64,7 +64,8 @@ async function getPoolState() {
 
 // Create Pool
 async function createPool() {
-    const immutables = await getPoolImmutables();
+    try {
+        const immutables = await getPoolImmutables();
     const state = await getPoolState();
 
     const TokenA = new Token(1, immutables.token0, 6, "USDC", "USD Coin");
@@ -79,5 +80,11 @@ async function createPool() {
         state.tick
     )
     console.log(pool);
+    } catch (e) {
+        const result = (e as Error).message;
+        console.log(result);
+        
+    }
+    
 }
 createPool();
