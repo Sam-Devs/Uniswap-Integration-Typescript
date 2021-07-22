@@ -4,8 +4,6 @@ import { CurrencyAmount, Token } from "@uniswap/sdk-core";
 import { abi as ISwapRouter } from "@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json";
 import { Pool, Route } from "@uniswap/v3-sdk";
 import { getPoolImmutables, getPoolState } from "./create-pool";
-import { stat } from "fs";
-
 
 // Provider
 const mainnet = process.env.MAINNET;
